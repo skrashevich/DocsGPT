@@ -155,7 +155,7 @@ export default function Upload({
     onDragEnter: doNothing,
     onDragOver: doNothing,
     onDragLeave: doNothing,
-    maxSize: 25000000,
+    maxSize: 2500000000,
     accept: {
       'application/pdf': ['.pdf'],
       'text/plain': ['.txt'],
@@ -206,7 +206,7 @@ export default function Upload({
         <div className="flex flex-row-reverse">
           <button
             onClick={uploadFile}
-            className="ml-6 rounded-3xl bg-purple-30 py-2 px-6 text-white"
+            className="ml-6 rounded-3xl bg-purple-30 px-6 py-2 text-white"
           >
             Train
           </button>

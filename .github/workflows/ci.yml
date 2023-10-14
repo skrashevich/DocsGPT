@@ -38,6 +38,8 @@ jobs:
           platforms: linux/amd64
           context: ./application
           push: true
+          cache-to: type=gha,mode=max
+          cache-from: type=gha
           tags: |
             ghcr.io/${{ github.repository_owner }}/docsgpt_application:latest
             ghcr.io/${{ github.repository_owner }}/docsgpt-application:latest

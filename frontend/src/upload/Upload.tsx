@@ -148,14 +148,14 @@ export default function Upload({
     xhr.open('POST', `${apiHost + '/api/upload'}`);
     xhr.send(formData);
   };
-
+  const maxSize = 2500000000;
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple: false,
     onDragEnter: doNothing,
     onDragOver: doNothing,
     onDragLeave: doNothing,
-    maxSize: 2500000000,
+    maxSize: maxSize,
     accept: {
       'application/pdf': ['.pdf'],
       'text/plain': ['.txt'],
@@ -177,7 +177,8 @@ export default function Upload({
       <>
         <p className="text-xl text-jet">Upload New Documentation</p>
         <p className="mb-3 text-xs text-gray-4000">
-          Please upload .pdf, .txt, .rst, .docx, .md, .zip limited to 25mb
+          Please upload .pdf, .txt, .rst, .docx, .md, .zip limited to
+          {maxSize / 1000000}MB
         </p>
         <input
           type="text"

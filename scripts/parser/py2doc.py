@@ -10,14 +10,16 @@ from langchain.prompts import PromptTemplate
 def find_files(directory):
     files_list = []
     for root, dirs, files in os.walk(directory):
+        if "node_modules" in dirs:
+            dirs.remove("node_modules")
         for file in files:
-            if file.endswith('.py'):
+            if file.endswith(".py") and not file.startswith("."):
                 files_list.append(os.path.join(root, file))
     return files_list
 
 
 def extract_functions(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         source_code = file.read()
         functions = {}
         tree = ast.parse(source_code)
@@ -30,7 +32,7 @@ def extract_functions(file_path):
 
 
 def extract_classes(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         source_code = file.read()
         classes = {}
         tree = ast.parse(source_code)
@@ -77,7 +79,8 @@ def parse_functions(functions_dict, formats, dir):
             mode = "a" if Path(f"outputs/{source_w}").exists() else "w"
             with open(f"outputs/{source_w}", mode) as f:
                 f.write(
-                    f"\n\n# Function name: {name} \n\nFunction: \n```\n{function}\n```, \nDocumentation: \n{response}")
+                    f"\n\n# Function name: {name} \n\nFunction: \n```\n{function}\n```, \nDocumentation: \n{response}"
+                )
 
 
 def parse_classes(classes_dict, formats, dir):
@@ -94,18 +97,29 @@ def parse_classes(classes_dict, formats, dir):
                 template="Class name: {class_name} \nFunctions: {functions_names}, \nDocumentation: ",
             )
             llm = OpenAI(temperature=0)
-            response = llm(prompt.format(class_name=name, functions_names=function_names))
+            response = llm(
+                prompt.format(class_name=name, functions_names=function_names)
+            )
 
-            with open(f"outputs/{source_w}", "a" if Path(f"outputs/{source_w}").exists() else "w") as f:
-                f.write(f"\n\n# Class name: {name} \n\nFunctions: \n{function_names}, \nDocumentation: \n{response}")
+            with open(
+                f"outputs/{source_w}",
+                "a" if Path(f"outputs/{source_w}").exists() else "w",
+            ) as f:
+                f.write(
+                    f"\n\n# Class name: {name} \n\nFunctions: \n{function_names}, \nDocumentation: \n{response}"
+                )
 
 
 def transform_to_docs(functions_dict, classes_dict, formats, dir):
-    docs_content = ''.join([str(key) + str(value) for key, value in functions_dict.items()])
-    docs_content += ''.join([str(key) + str(value) for key, value in classes_dict.items()])
+    docs_content = "".join(
+        [str(key) + str(value) for key, value in functions_dict.items()]
+    )
+    docs_content += "".join(
+        [str(key) + str(value) for key, value in classes_dict.items()]
+    )
 
     num_tokens = len(tiktoken.get_encoding("cl100k_base").encode(docs_content))
-    total_price = ((num_tokens / 1000) * 0.02)
+    total_price = (num_tokens / 1000) * 0.02
 
     print(f"Number of Tokens = {num_tokens:,d}")
     print(f"Approx Cost = ${total_price:,.2f}")

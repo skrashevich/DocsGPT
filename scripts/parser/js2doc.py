@@ -7,50 +7,76 @@ import esprima
 def find_files(directory):
     files_list = []
     for root, dirs, files in os.walk(directory):
+        if "node_modules" in dirs:
+            dirs.remove("node_modules")
         for file in files:
-            if file.endswith('.js'):
+            if file.endswith(".js") and not file.startswith("."):
                 files_list.append(os.path.join(root, file))
     return files_list
 
 
 def extract_functions(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         source_code = file.read()
         functions = {}
-        tree = esprima.parseScript(source_code)
+        try:
+            tree = esprima.parseScript(source_code, {"jsx": True})
+        except Exception as e:
+            # Handle the error here
+            print("An error occurred at file", file_path, ":", e)
+            return
         for node in tree.body:
-            if node.type == 'FunctionDeclaration':
-                func_name = node.id.name if node.id else '<anonymous>'
+            if node.type == "FunctionDeclaration":
+                func_name = node.id.name if node.id else "<anonymous>"
                 functions[func_name] = escodegen.generate(node)
-            elif node.type == 'VariableDeclaration':
+            elif node.type == "VariableDeclaration":
                 for declaration in node.declarations:
-                    if declaration.init and declaration.init.type == 'FunctionExpression':
-                        func_name = declaration.id.name if declaration.id else '<anonymous>'
+                    if (
+                        declaration.init
+                        and declaration.init.type == "FunctionExpression"
+                    ):
+                        func_name = (
+                            declaration.id.name if declaration.id else "<anonymous>"
+                        )
                         functions[func_name] = escodegen.generate(declaration.init)
-            elif node.type == 'ClassDeclaration':
+            elif node.type == "ClassDeclaration":
                 for subnode in node.body.body:
-                    if subnode.type == 'MethodDefinition':
+                    if subnode.type == "MethodDefinition":
                         func_name = subnode.key.name
                         functions[func_name] = escodegen.generate(subnode.value)
-                    elif subnode.type == 'VariableDeclaration':
+                    elif subnode.type == "VariableDeclaration":
                         for declaration in subnode.declarations:
-                            if declaration.init and declaration.init.type == 'FunctionExpression':
-                                func_name = declaration.id.name if declaration.id else '<anonymous>'
-                                functions[func_name] = escodegen.generate(declaration.init)
+                            if (
+                                declaration.init
+                                and declaration.init.type == "FunctionExpression"
+                            ):
+                                func_name = (
+                                    declaration.id.name
+                                    if declaration.id
+                                    else "<anonymous>"
+                                )
+                                functions[func_name] = escodegen.generate(
+                                    declaration.init
+                                )
         return functions
 
 
 def extract_classes(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, "r") as file:
         source_code = file.read()
         classes = {}
-        tree = esprima.parseScript(source_code)
+        try:
+            tree = esprima.parseScript(source_code)
+        except Exception as e:
+            # Handle the error here
+            print("An error occurred at file", file_path, ":", e)
+            return
         for node in tree.body:
-            if node.type == 'ClassDeclaration':
+            if node.type == "ClassDeclaration":
                 class_name = node.id.name
                 function_names = []
                 for subnode in node.body.body:
-                    if subnode.type == 'MethodDefinition':
+                    if subnode.type == "MethodDefinition":
                         function_names.append(subnode.key.name)
                 classes[class_name] = ", ".join(function_names)
     return classes

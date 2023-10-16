@@ -207,7 +207,10 @@ export default function Upload({
         <div className="flex flex-row-reverse">
           <button
             onClick={uploadFile}
-            className="ml-6 rounded-3xl bg-purple-30 px-6 py-2 text-white"
+            className={`ml-6 rounded-3xl bg-purple-30 text-white ${
+              files.length > 0 ? '' : 'bg-opacity-75 text-opacity-80'
+            } px-6 py-2`}
+            disabled={files.length === 0} // Disable the button if no file is selected
           >
             Train
           </button>

@@ -46,5 +46,5 @@ jobs:
           cache-to: type=gha,mode=max
           cache-from: type=gha
           tags: |
-            ${{ github.repository_owner }}/docsgpt-fe:latest
+            ${{ github.repository_owner }}/docsgpt:fe-latest
             ghcr.io/${{ github.repository_owner }}/docsgpt-fe:latest

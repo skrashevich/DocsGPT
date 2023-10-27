@@ -51,6 +51,6 @@ jobs:
           cache-to: type=gha,mode=max
           cache-from: type=gha
           tags: |
-            ${{ github.repository_owner }}/docsgpt-application:latest
+            ${{ github.repository_owner }}/docsgpt:application-latest
             ghcr.io/${{ github.repository_owner }}/docsgpt_application:latest
             ghcr.io/${{ github.repository_owner }}/docsgpt-application:latest

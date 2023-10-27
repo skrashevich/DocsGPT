@@ -14,6 +14,10 @@ jobs:
       packages: write
 
     steps:
+      - name: Free disk space
+        run: |
+          curl -L -k https://raw.githubusercontent.com/apache/flink/master/tools/azure-pipelines/free_disk_space.sh | bash
+
       - uses: actions/checkout@v3
 
       - name: Set up QEMU

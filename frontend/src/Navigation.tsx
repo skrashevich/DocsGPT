@@ -7,7 +7,7 @@ import Message from './assets/message.svg';
 import Hamburger from './assets/hamburger.svg';
 import Key from './assets/key.svg';
 import Info from './assets/info.svg';
-import Link from './assets/link.svg';
+import Documentation from './assets/documentation.svg';
 import Discord from './assets/discord.svg';
 import Github from './assets/github.svg';
 import UploadIcon from './assets/upload.svg';
@@ -172,7 +172,7 @@ export default function Navigation({ navOpen, setNavOpen }: NavigationProps) {
     <>
       {!navOpen && (
         <button
-          className="duration-25 absolute relative left-3 top-3 z-20 hidden transition-all md:block"
+          className="duration-25 absolute sticky left-3 top-3 z-20 hidden transition-all md:block"
           onClick={() => {
             setNavOpen(!navOpen);
           }}
@@ -243,7 +243,7 @@ export default function Navigation({ navOpen, setNavOpen }: NavigationProps) {
         <div className="flex flex-col-reverse border-b-2">
           <div className="relative my-4 flex gap-2 px-2">
             <div
-              className="flex h-12 w-full cursor-pointer justify-between rounded-3xl border-2 bg-white"
+              className="flex h-12 w-5/6 cursor-pointer justify-between rounded-3xl border-2 bg-white"
               onClick={() => setIsDocsListOpen(!isDocsListOpen)}
             >
               {selectedDocs && (
@@ -255,7 +255,7 @@ export default function Navigation({ navOpen, setNavOpen }: NavigationProps) {
                 src={Arrow2}
                 alt="arrow"
                 className={`${
-                  isDocsListOpen ? 'rotate-0' : 'rotate-180'
+                  !isDocsListOpen ? 'rotate-0' : 'rotate-180'
                 } ml-auto mr-3 w-3 transition-all`}
               />
             </div>
@@ -338,7 +338,7 @@ export default function Navigation({ navOpen, setNavOpen }: NavigationProps) {
             rel="noreferrer"
             className="mx-4 my-auto flex h-9 cursor-pointer gap-4 rounded-3xl hover:bg-gray-100"
           >
-            <img src={Link} alt="link" className="ml-2 w-5" />
+            <img src={Documentation} alt="documentation" className="ml-2 w-5" />
             <p className="my-auto text-eerie-black">Documentation</p>
           </a>
           <a
@@ -362,7 +362,7 @@ export default function Navigation({ navOpen, setNavOpen }: NavigationProps) {
           </a>
         </div>
       </div>
-      <div className="fixed h-16 w-full border-b-2 bg-gray-50 md:hidden">
+      <div className="fixed z-10 h-16 w-full border-b-2 bg-gray-50 md:hidden">
         <button
           className="ml-6 mt-5 h-6 w-6 md:hidden"
           onClick={() => setNavOpen(true)}

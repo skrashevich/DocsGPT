@@ -17,9 +17,9 @@ export default function Hero({ className = '' }: { className?: string }) {
         Start by entering your query in the input field below and we will do the
         rest!
       </p>
-      <div className="sections mt-1 flex flex-wrap items-center justify-center gap-1 sm:gap-1 md:gap-0  ">
-        <div className=" rounded-[50px] bg-gradient-to-l from-[#6EE7B7]/70 via-[#3B82F6] to-[#9333EA]/50 p-1  md:rounded-br-none md:rounded-tr-none">
-          <div className="h-full rounded-[45px] bg-white p-6 md:rounded-br-none md:rounded-tr-none">
+      <div className="sections mt-8 flex flex-wrap items-center justify-center sm:gap-1 md:gap-0  ">
+        <div className="mb-4 mr-4 h-[224px] rounded-[25px] bg-gradient-to-l from-[#6EE7B7]/70 via-[#3B82F6] to-[#9333EA]/50 p-1">
+          <div className="h-full rounded-[21px] bg-white p-6">
             <img
               src="/message-text.svg"
               alt="lock"
@@ -35,8 +35,8 @@ export default function Hero({ className = '' }: { className?: string }) {
           </div>
         </div>
 
-        <div className=" rounded-[50px] bg-gradient-to-r from-[#6EE7B7]/70 via-[#3B82F6] to-[#9333EA]/50 p-1 md:rounded-none  md:px-0 md:py-1">
-          <div className="rounded-[45px] bg-white px-6 py-4 md:rounded-none">
+        <div className="mb-4 mr-4 rounded-[25px] bg-gradient-to-l from-[#6EE7B7]/70 via-[#3B82F6] to-[#9333EA]/50 p-1">
+          <div className="h-full rounded-[21px] bg-white p-6">
             <img src="/lock.svg" alt="lock" className="h-[24px] w-[24px]" />
             <h2 className="mb-3 mt-2 text-lg font-bold">Secure Data Storage</h2>
             <p className=" w-[250px] text-xs text-gray-500">
@@ -47,8 +47,8 @@ export default function Hero({ className = '' }: { className?: string }) {
             </p>
           </div>
         </div>
-        <div className=" rounded-[50px] bg-gradient-to-l from-[#6EE7B7]/80 via-[#3B82F6] to-[#9333EA]/50 p-1  md:rounded-bl-none md:rounded-tl-none">
-          <div className="rounded-[45px] bg-white p-6 px-6 lg:rounded-bl-none lg:rounded-tl-none">
+        <div className="mb-4 rounded-[25px] bg-gradient-to-l from-[#6EE7B7]/70 via-[#3B82F6] to-[#9333EA]/50 p-1">
+          <div className="h-full rounded-[21px] bg-white p-6">
             <img
               src="/message-programming.svg"
               alt="lock"

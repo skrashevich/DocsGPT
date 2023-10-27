@@ -1,6 +1,7 @@
 import { forwardRef, useState } from 'react';
 import Avatar from '../Avatar';
 import { FEEDBACK, MESSAGE_TYPE } from './conversationModels';
+import classes from './ConversationBubble.module.css';
 import Alert from './../assets/alert.svg';
 import { ReactComponent as Like } from './../assets/like.svg';
 import { ReactComponent as Dislike } from './../assets/dislike.svg';
@@ -27,7 +28,6 @@ const ConversationBubble = forwardRef<
   { message, type, className, feedback, handleFeedback, sources },
   ref,
 ) {
-  const [showFeedback, setShowFeedback] = useState(false);
   const [openSource, setOpenSource] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -37,19 +37,14 @@ const ConversationBubble = forwardRef<
     // Reset copied to false after a few seconds
     setTimeout(() => {
       setCopied(false);
-    }, 2000);
+    }, 3000);
   };
+  const [isCopyHovered, setIsCopyHovered] = useState(false);
+  const [isLikeHovered, setIsLikeHovered] = useState(false);
+  const [isDislikeHovered, setIsDislikeHovered] = useState(false);
+  const [isLikeClicked, setIsLikeClicked] = useState(false);
+  const [isDislikeClicked, setIsDislikeClicked] = useState(false);
 
-  const List = ({
-    ordered,
-    children,
-  }: {
-    ordered?: boolean;
-    children: React.ReactNode;
-  }) => {
-    const Tag = ordered ? 'ol' : 'ul';
-    return <Tag className="list-inside list-disc">{children}</Tag>;
-  };
   let bubble;
 
   if (type === 'QUESTION') {
@@ -67,16 +62,14 @@ const ConversationBubble = forwardRef<
     bubble = (
       <div
         ref={ref}
-        className={`flex self-start ${className} flex-col`}
-        onMouseEnter={() => setShowFeedback(true)}
-        onMouseLeave={() => setShowFeedback(false)}
+        className={`flex self-start ${className} group flex-col pr-20`}
       >
         <div className="flex self-start">
           <Avatar className="mt-2 text-2xl" avatar="🦖"></Avatar>
           <div
-            className={`ml-2 mr-5 flex flex-col rounded-3xl bg-gray-1000 p-3.5 ${
+            className={`ml-2 mr-5 flex rounded-3xl bg-gray-1000 p-3.5 ${
               type === 'ERROR'
-                ? 'flex-row rounded-full border border-transparent bg-[#FFE7E7] p-2 py-5 text-sm font-normal text-red-3000  dark:border-red-2000 dark:text-white'
+                ? 'flex-row items-center rounded-full border border-transparent bg-[#FFE7E7] p-2 py-5 text-sm font-normal text-red-3000  dark:border-red-2000 dark:text-white'
                 : 'flex-col rounded-3xl'
             }`}
           >
@@ -104,11 +97,23 @@ const ConversationBubble = forwardRef<
                     </code>
                   );
                 },
-                ul({ node, children }) {
-                  return <List>{children}</List>;
+                ul({ children }) {
+                  return (
+                    <ul
+                      className={`list-inside list-disc whitespace-normal pl-4 ${classes.list}`}
+                    >
+                      {children}
+                    </ul>
+                  );
                 },
-                ol({ node, children }) {
-                  return <List ordered>{children}</List>;
+                ol({ children }) {
+                  return (
+                    <ol
+                      className={`list-inside list-decimal whitespace-normal pl-4 ${classes.list}`}
+                    >
+                      {children}
+                    </ol>
+                  );
                 },
               }}
             >
@@ -149,52 +154,113 @@ const ConversationBubble = forwardRef<
             )}
           </div>
           <div
-            className={`relative mr-2 flex items-center justify-center ${
-              type !== 'ERROR' && showFeedback ? '' : 'md:invisible'
+            className={`relative mr-5 flex items-center justify-center md:invisible ${
+              type !== 'ERROR' ? 'group-hover:md:visible' : ''
             }`}
           >
-            {copied ? (
-              <Checkmark className="absolute left-2 top-4" />
-            ) : (
-              <Copy
-                className={`absolute left-2 top-4 cursor-pointer fill-gray-4000 hover:stroke-gray-4000`}
-                onClick={() => {
-                  handleCopyClick(message);
+            <div className="absolute left-2 top-4">
+              <div
+                className="flex items-center justify-center rounded-full p-2"
+                style={{
+                  backgroundColor: isCopyHovered ? '#EEEEEE' : '#ffffff',
                 }}
-              ></Copy>
-            )}
+              >
+                {copied ? (
+                  <Checkmark
+                    className="cursor-pointer stroke-green-2000"
+                    onMouseEnter={() => setIsCopyHovered(true)}
+                    onMouseLeave={() => setIsCopyHovered(false)}
+                  />
+                ) : (
+                  <Copy
+                    className={`cursor-pointer fill-none`}
+                    onClick={() => {
+                      handleCopyClick(message);
+                    }}
+                    onMouseEnter={() => setIsCopyHovered(true)}
+                    onMouseLeave={() => setIsCopyHovered(false)}
+                  ></Copy>
+                )}
+              </div>
+            </div>
           </div>
           <div
-            className={`relative mr-2 flex items-center justify-center ${
-              feedback === 'LIKE' || (type !== 'ERROR' && showFeedback)
-                ? ''
-                : 'md:invisible'
+            className={`relative mr-5 flex items-center justify-center ${
+              !isLikeClicked ? 'md:invisible' : ''
+            } ${
+              feedback === 'LIKE' || type !== 'ERROR'
+                ? 'group-hover:md:visible'
+                : ''
             }`}
           >
-            <Like
-              className={`absolute left-6  top-4 cursor-pointer ${
-                feedback === 'LIKE'
-                  ? 'fill-purple-30 stroke-purple-30'
-                  : 'fill-none  stroke-gray-4000 hover:fill-gray-4000'
-              }`}
-              onClick={() => handleFeedback?.('LIKE')}
-            ></Like>
+            <div className="absolute left-6 top-4">
+              <div
+                className="flex items-center justify-center rounded-full p-2"
+                style={{
+                  backgroundColor: isLikeHovered
+                    ? isLikeClicked
+                      ? 'rgba(125, 84, 209, 0.3)'
+                      : '#EEEEEE'
+                    : isLikeClicked
+                    ? 'rgba(125, 84, 209, 0.3)'
+                    : '#ffffff',
+                }}
+              >
+                <Like
+                  className={`cursor-pointer ${
+                    isLikeClicked || feedback === 'LIKE'
+                      ? 'fill-white-3000 stroke-purple-30'
+                      : 'fill-none  stroke-gray-4000'
+                  }`}
+                  onClick={() => {
+                    handleFeedback?.('LIKE');
+                    setIsLikeClicked(true);
+                    setIsDislikeClicked(false);
+                  }}
+                  onMouseEnter={() => setIsLikeHovered(true)}
+                  onMouseLeave={() => setIsLikeHovered(false)}
+                ></Like>
+              </div>
+            </div>
           </div>
           <div
-            className={`relative mr-10 flex items-center justify-center ${
-              feedback === 'DISLIKE' || (type !== 'ERROR' && showFeedback)
-                ? ''
-                : 'md:invisible'
+            className={`mr-13 relative flex items-center justify-center ${
+              !isDislikeClicked ? 'md:invisible' : ''
+            } ${
+              feedback === 'DISLIKE' || type !== 'ERROR'
+                ? 'group-hover:md:visible'
+                : ''
             }`}
           >
-            <Dislike
-              className={`absolute left-10 top-4 cursor-pointer ${
-                feedback === 'DISLIKE'
-                  ? 'fill-red-2000 stroke-red-2000'
-                  : 'fill-none  stroke-gray-4000 hover:fill-gray-4000'
-              }`}
-              onClick={() => handleFeedback?.('DISLIKE')}
-            ></Dislike>
+            <div className="absolute left-10 top-4">
+              <div
+                className="flex items-center justify-center rounded-full p-2"
+                style={{
+                  backgroundColor: isDislikeHovered
+                    ? isDislikeClicked
+                      ? 'rgba(248, 113, 113, 0.3)'
+                      : '#EEEEEE'
+                    : isDislikeClicked
+                    ? 'rgba(248, 113, 113, 0.3)'
+                    : '#ffffff',
+                }}
+              >
+                <Dislike
+                  className={`cursor-pointer ${
+                    isDislikeClicked || feedback === 'DISLIKE'
+                      ? 'fill-white-3000 stroke-red-2000'
+                      : 'fill-none  stroke-gray-4000'
+                  }`}
+                  onClick={() => {
+                    handleFeedback?.('DISLIKE');
+                    setIsDislikeClicked(true);
+                    setIsLikeClicked(false);
+                  }}
+                  onMouseEnter={() => setIsDislikeHovered(true)}
+                  onMouseLeave={() => setIsDislikeHovered(false)}
+                ></Dislike>
+              </div>
+            </div>
           </div>
         </div>
 

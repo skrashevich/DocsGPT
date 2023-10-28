@@ -140,10 +140,10 @@ def remote_worker(self, inputs, name_job, user, directory = 'temp', loader = 'ur
     if settings.VECTOR_STORE == "faiss":
         files = {'file_faiss': open(full_path + '/index.faiss', 'rb'),
                  'file_pkl': open(full_path + '/index.pkl', 'rb')}
-        response = requests.post(urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data)
-        response = requests.get(urljoin(settings.API_URL, "/api/delete_old?path=" + full_path))
+        requests.post(urljoin(settings.API_URL, "/api/upload_index"), files=files, data=file_data)
+        requests.get(urljoin(settings.API_URL, "/api/delete_old?path=" + full_path))
     else:
-        response = requests.post(urljoin(settings.API_URL, "/api/upload_index"), data=file_data)
+        requests.post(urljoin(settings.API_URL, "/api/upload_index"), data=file_data)
 
     shutil.rmtree(full_path)
 

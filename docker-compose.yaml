@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   frontend:
-    image: ghcr.io/skrashevich/docsgpt-fe:latest
+    image: skrashevich/docsgpt:fe-latest
     build: ./frontend
     environment:
       - VITE_API_HOST=$VITE_API_HOST
@@ -13,7 +13,7 @@ services:
       - backend
 
   backend:
-    image: ghcr.io/skrashevich/docsgpt_application:latest
+    image: skrashevich/docsgpt:application-latest
     build: ./application
     environment:
       - API_KEY=$API_KEY
@@ -32,7 +32,7 @@ services:
       - mongo
 
   worker:
-    image: ghcr.io/skrashevich/docsgpt_application:latest
+    image: skrashevich/docsgpt:application-latest
     build: ./application
     command: celery -A application.app.celery worker -l INFO
     environment:
@@ -63,3 +63,4 @@ volumes:
   backend_indexes:
   backend_inputs:
   backend_vectors:
+  
